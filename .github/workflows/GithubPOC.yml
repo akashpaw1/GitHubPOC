@@ -25,7 +25,7 @@ jobs:
         #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         #    shell: powershell
         run: 
-           D:\sonarScanner\SonarScanner.MSBuild.exe begin /k:"GihubAction" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" /d:sonar.cs.opencover.reportsPaths="%CD%\opencover.xml"
+           D:\sonarScanner\SonarScanner.MSBuild.exe begin /k:"GihubAction" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" /d:sonar.cs.opencover.reportsPaths="$GITHUB_WORKSPACE\WebApplication1\opencover.xml"
      
       - name: Setup MSBuild path
         uses: microsoft/setup-msbuild@v1.0.2
@@ -62,7 +62,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: code-coverage
-          path: coverage-report/**
+          path: $GITHUB_WORKSPACE/coverage-report/**
       
       # - name: Run Code Coverage
       #   run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
