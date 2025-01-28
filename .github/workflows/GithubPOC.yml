@@ -56,7 +56,7 @@ jobs:
 
       - name: Generate code coverage report
         run: |
-         "C:\Users\akashpaw\.dotnet\tools\reportgenerator.exe" -reports:coverage.xml -targetdir:coverage-report -reporttypes:Html
+         & "C:\Users\akashpaw\.dotnet\tools\reportgenerator.exe" -reports:coverage.xml -targetdir:coverage-report -reporttypes:Html
 
       - name: Upload Code Coverage Report
         uses: actions/upload-artifact@v3
