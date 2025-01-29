@@ -48,8 +48,12 @@ jobs:
 
       - name: Publish to folder/build project solution
         # run: msbuild /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
-        run: msbuild /t:Build /p:Configuration=Release WebApplication1.sln
+        run: msbuild /t:Build /p:Configuration=Release WebApplication1.sln /p:DeployOnBuild=true /p:OutputPath="published"
+        #run: msbuild WebApplication1.sln /p:Configuration=Release /p:DeployOnBuild=true /p:OutputPath="published"
 
+      - name: Debug - List Files
+        run: dir /s published
+  
       - name: Run tests with OpenCover
         run: |
           D:\opencover\OpenCover.Console.exe -output:"opencover.xml" -register:user -target:"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" -targetargs:"WebApplication1.Tests\bin\Release\WebApplication1.Tests.dll" -filter:"+[*]* -[*.Tests]*" 
