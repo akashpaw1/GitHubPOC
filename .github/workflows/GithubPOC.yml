@@ -51,8 +51,8 @@ jobs:
         run: msbuild /t:Build /p:Configuration=Release WebApplication1.sln /p:DeployOnBuild=true /p:OutputPath="published"
         #run: msbuild WebApplication1.sln /p:Configuration=Release /p:DeployOnBuild=true /p:OutputPath="published"
 
-      - name: Debug - List Files
-        run: dir /s published
+      # - name: Debug - List Files
+      #   run: dir /s published
   
       - name: Run tests with OpenCover
         run: |
