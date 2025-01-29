@@ -48,7 +48,7 @@ jobs:
 
       - name: Publish to folder/build project solution
         # run: msbuild /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
-        run: msbuild /t:Build /p:Configuration=Release WebApplication1.sln /p:DeployOnBuild=true /p:OutputPath="published"
+        run: msbuild /t:Build /p:Configuration=Release WebApplication1.sln
         #run: msbuild WebApplication1.sln /p:Configuration=Release /p:DeployOnBuild=true /p:OutputPath="published"
 
       # - name: Debug - List Files
@@ -104,7 +104,7 @@ jobs:
         uses: actions/upload-artifact@v4.6.0
         with:
           name: ASP-app
-          path: published
+          path: '/published/**'
 
 
   deploy:
@@ -118,7 +118,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ASP-app
-          path: published
+          path: /published
 
       # Step 2: Deploy to Azure App Service
       - name: Deploy to Azure App Service
