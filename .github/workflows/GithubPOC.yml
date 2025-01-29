@@ -111,10 +111,10 @@ jobs:
     steps:
       # Step 1: Download Build Artifact
       - name: Download Artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.6.0
         with:
           name: ASP-app
-          path: publish
+          path: published
 
       # Step 2: Deploy to Azure App Service
       - name: Deploy to Azure App Service
