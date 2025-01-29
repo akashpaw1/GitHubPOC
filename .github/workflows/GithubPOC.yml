@@ -62,7 +62,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: code-coverage
-          path: $GITHUB_WORKSPACE/coverage-report/**
+          # path: $GITHUB_WORKSPACE/coverage-report/**
+          path: $GITHUB_WORKSPACE/WebApplication1/opencover.xml
       
       # - name: Run Code Coverage
       #   run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
