@@ -49,11 +49,11 @@ jobs:
       - name: Publish to folder/build project solution
         # run: msbuild /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
         #msbuild.exe MyWebApplication.sln /nologo /nr:false /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /p:PublishUrl="../_build"
-        run: msbuild /t:Build /p:Configuration=Release WebApplication1.sln /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /p:PublishUrl="../_build"
-        #run: msbuild WebApplication1.sln /p:Configuration=Release /p:DeployOnBuild=true /p:OutputPath="published"
+        #run: msbuild /t:Build /p:Configuration=Release WebApplication1.sln /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /p:PublishUrl="../_build"
+        run: msbuild WebApplication1.sln /p:Configuration=Release /p:DeployOnBuild=true /p:OutputPath="published"
 
-      # - name: Debug - List Files
-      #   run: dir /s published
+      - name: Debug - List Files Before Upload
+        run: ls -R published
   
       - name: Run tests with OpenCover
         run: |
@@ -105,7 +105,7 @@ jobs:
         uses: actions/upload-artifact@v4.6.0
         with:
           name: ASP-app
-          path: "./_build"
+          path: published/**
 
 
   deploy:
@@ -119,7 +119,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ASP-app
-         # path: /published
+          path: published
 
       # Step 2: Deploy to Azure App Service
       - name: Deploy to Azure App Service
