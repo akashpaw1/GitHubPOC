@@ -119,7 +119,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ASP-app
-          path: published
+          path: ../published/*
 
       # Step 2: Deploy to Azure App Service
       - name: Deploy to Azure App Service
