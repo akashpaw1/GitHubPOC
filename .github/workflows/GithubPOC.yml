@@ -52,8 +52,8 @@ jobs:
         #run: msbuild /t:Build /p:Configuration=Release WebApplication1.sln /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /p:PublishUrl="../_build"
         run: msbuild WebApplication1.sln /p:Configuration=Release /p:DeployOnBuild=true /p:OutputPath="published"
 
-      - name: Debug - List Files Before Upload
-        run: ls -R published
+      # - name: Debug - List Files Before Upload
+      #   run: ls -R published
   
       - name: Run tests with OpenCover
         run: |
@@ -102,7 +102,7 @@ jobs:
            D:\sonarScanner\SonarScanner.MSBuild.exe end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4.6.0
+        uses: actions/upload-artifact@v4
         with:
           name: ASP-app
           path: published/**
@@ -116,7 +116,7 @@ jobs:
     steps:
       # Step 1: Download Build Artifact
       - name: Download Artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ASP-app
           path: ../published/*
