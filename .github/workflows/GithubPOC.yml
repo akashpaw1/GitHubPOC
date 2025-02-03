@@ -64,7 +64,7 @@ jobs:
       #    & "C:\Users\akashpaw\.dotnet\tools\reportgenerator.exe" -reports:coverage.xml -targetdir:coverage-report -reporttypes:Html
 
       - name: Upload Code Coverage Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: code-coverage
           # path: $GITHUB_WORKSPACE/coverage-report/**
