@@ -25,7 +25,7 @@ jobs:
         #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         #    shell: powershell
         run: 
-           D:\sonarScanner\SonarScanner.MSBuild.exe begin /k:"GihubAction" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
+           D:\sonarScanner\SonarScanner.MSBuild.exe begin /k:"GihubAction" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" /d:sonar.cs.opencover.reportsPaths="$GITHUB_WORKSPACE\WebApplication1\opencover.xml"
      
       - name: Setup MSBuild path
         uses: microsoft/setup-msbuild@v1.0.2
@@ -46,10 +46,30 @@ jobs:
 
  
 
-      - name: Publish to folder/build project
+      - name: Publish to folder/build project solution
         # run: msbuild /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
-        run: msbuild /t:Build /p:Configuration=Release WebApplication1.sln
+        #msbuild.exe MyWebApplication.sln /nologo /nr:false /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /p:PublishUrl="../_build"
+        #run: msbuild /t:Build /p:Configuration=Release WebApplication1.sln /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /p:PublishUrl="../_build"
+        run: msbuild WebApplication1.sln /p:Configuration=Release /p:DeployOnBuild=true
 
+      # - name: Debug - List Files Before Upload
+      #   run: ls -R published
+  
+      - name: Run tests with OpenCover
+        run: |
+          D:\opencover\OpenCover.Console.exe -output:"opencover.xml" -register:user -target:"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" -targetargs:"WebApplication1.Tests\bin\Release\WebApplication1.Tests.dll" -filter:"+[*]* -[*.Tests]*" 
+
+      # - name: Generate code coverage report
+      #   run: |
+      #    & "C:\Users\akashpaw\.dotnet\tools\reportgenerator.exe" -reports:coverage.xml -targetdir:coverage-report -reporttypes:Html
+
+      - name: Upload Code Coverage Report
+        uses: actions/upload-artifact@v4.6.0
+        with:
+          name: code-coverage
+          # path: $GITHUB_WORKSPACE/coverage-report/**
+          path: $GITHUB_WORKSPACE/WebApplication1/opencover.xml
+      
       # - name: Run Code Coverage
       #   run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
@@ -64,13 +84,13 @@ jobs:
       #    ReportGenerator.exe -reports:**/coverage.opencover.xml -targetdir:coverage-report -reporttypes:Html
       #    mv coverage-report $GITHUB_WORKSPACE/coverage-report
 
-      - name: Sonarqube build
-        # env:
-        #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-        #    shell: powershell
-        run: 
-           # D:\sonarScanner\SonarScanner.MSBuild.exe build
-           MSBuild.exe WebApplication1.sln
+      # - name: Sonarqube build
+      #   # env:
+      #   #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+      #   #    shell: powershell
+      #   run: 
+      #      # D:\sonarScanner\SonarScanner.MSBuild.exe build
+      #      MSBuild.exe WebApplication1.sln
            
 
            
@@ -85,4 +105,27 @@ jobs:
         uses: actions/upload-artifact@v4.6.0
         with:
           name: ASP-app
-          path: '/published/**'
+          #path: '/published/**'
+          path: WebApplication1/WebApplication1/published/**
+
+  deploy:
+    name: Deploy to Azure App Service
+    runs-on: self-hosted
+    needs: build
+
+    steps:
+      # Step 1: Download Build Artifact
+      - name: Download Artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: ASP-app
+          #path: _work/GitHubPOC/GitHubPOC/WebApplication1/WebApplication1/published/**
+          path: WebApplication1/WebApplication1/published
+
+      # Step 2: Deploy to Azure App Service
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "your-app-service-name"
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          package: publish
