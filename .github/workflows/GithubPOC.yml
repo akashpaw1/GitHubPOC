@@ -105,7 +105,8 @@ jobs:
         uses: actions/upload-artifact@v4.6.0
         with:
           name: ASP-app
-          path: '/published/**'
+          #path: '/published/**'
+          path: WebApplication1/WebApplication1/published/**
 
   deploy:
     name: Deploy to Azure App Service
@@ -118,7 +119,8 @@ jobs:
         uses: actions/download-artifact@v4.1.8
         with:
           name: ASP-app
-          path: _work/GitHubPOC/GitHubPOC/WebApplication1/WebApplication1/published/**
+          #path: _work/GitHubPOC/GitHubPOC/WebApplication1/WebApplication1/published/**
+          path: WebApplication1/WebApplication1/published
 
       # Step 2: Deploy to Azure App Service
       - name: Deploy to Azure App Service
