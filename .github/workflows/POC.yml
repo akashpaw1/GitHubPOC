@@ -75,8 +75,8 @@ jobs:
           path: _build
 
       - name: Deploy to Azure App Service
-        uses: azure/webapps-deploy@v2
+        uses: azure/webapps-deploy@v3
         with:
-          app-name: ActionsDeploy
+          app-name: Actionapp
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           package: _build
